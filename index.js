@@ -29,45 +29,33 @@ app.get("/api/notes", (request, response) => {
 });
 
 app.get("/api/notes/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const note = Note.find({}).then((note) => note.id === id);
-  if (note) {
-    response.json(note);
-  } else {
-    response.status(404).end();
-  }
+  Note.findById(request.params.id).then((note) => response.json(note));
 });
 
-// app.delete("/api/notes/:id", (req, res) => {
-//   const id = Number(req.params.id);
-//   notes = Note.((note) => note.id !== id);
-//   res.send(204).end();
-// });
+app.delete("/api/notes/:id", (request, response) => {
+  Note.findByIdAndDelete(request.params.id).then(() => {
+    response.send(204).end();
+  });
+});
 
-// const generateId = () => {
-//   const maxId = notes.length > 0 ? Math.max(...notes.map((n) => n.id)) : 0;
-//   return maxId + 1;
-// };
+app.post("/api/notes", (request, response) => {
+  const body = request.body;
+  if (!body.content) {
+    return response.sendStatus(400).json({
+      error: "missing content",
+    });
+  }
 
-// app.post("/api/notes", (request, response) => {
-//   const body = request.body;
-//   if (!body.content) {
-//     return response.sendStatus(400).json({
-//       error: "missing content",
-//     });
-//   }
+  const note = new Note({
+    content: body.content,
+    important: body.important || false,
+    date: new Date(),
+  });
 
-//   const note = {
-//     content: body.content,
-//     important: body.important || false,
-//     date: new Date(),
-//     id: generateId(),
-//   };
-
-//   notes = notes.concat(note);
-
-//   response.json(note);
-// });
+  note.save().then((savedNote) => {
+    response.json(savedNote);
+  });
+});
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: "unknown endpoint" });
