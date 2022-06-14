@@ -1,0 +1,29 @@
+GET http://localhost:3001/api/notes
+
+###
+
+GET http://localhost:3001/api/notes/iddwada
+
+###
+DELETE http://localhost:3001/api/notes/idwadad
+
+###
+PUT http://localhost:3001/api/notes/62a605651101506a8f30e788
+Content-Type: application/json
+
+{
+  "content": "Put test",
+  "important": true
+}
+
+###
+POST http://localhost:3001/api/notes/
+Content-Type: application/json
+
+{
+  "content": "Aar",
+  "important": true
+}
+
+###
+POST http://localhost:3001/api/notes/
