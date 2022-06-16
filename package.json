@@ -4,13 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "NODE_ENV=production node index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
     "build:ui": "rm -rf build && cd ../fullstackopen/part2/notes-app/ && npm run build && cp -r build ../../../noteapp-backend-fs/",
     "deploy": "git push heroku master",
     "deploy:full": "npm run build:ui && git add . && git commit -m uibuild && npm run deploy",
     "logs:prod": "heroku logs --tail",
-    "test": "jest --verbose",
+    "test": "cross-env NODE_ENV=test jest --verbose --runInBand --forceExit",
     "test:coverage": "jest --verbose --coverage"
   },
   "author": "Aaron Donaldson",
@@ -22,8 +22,11 @@
     "mongoose": "^6.3.6"
   },
   "devDependencies": {
+    "@types/jest": "^28.1.1",
+    "cross-env": "^7.0.3",
     "jest": "^28.1.1",
-    "nodemon": "^2.0.16"
+    "nodemon": "^2.0.16",
+    "supertest": "^6.2.3"
   },
   "jest": {
     "testEnvironment": "node"
