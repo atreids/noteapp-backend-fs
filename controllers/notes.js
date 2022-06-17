@@ -6,16 +6,17 @@ notesRouter.get("/", async (request, response) => {
   response.json(notes);
 });
 
-notesRouter.get("/:id", (request, response, next) => {
-  Note.findById(request.params.id)
-    .then((note) => {
-      if (note) {
-        response.json(note);
-      } else {
-        response.status(404).end();
-      }
-    })
-    .catch((error) => next(error));
+notesRouter.get("/:id", async (request, response, next) => {
+  try {
+    const note = await Note.findById(request.params.id);
+    if (note) {
+      response.json(note);
+    } else {
+      response.status(404).end();
+    }
+  } catch (error) {
+    next(error);
+  }
 });
 
 notesRouter.post("/", async (request, response, next) => {
@@ -26,9 +27,12 @@ notesRouter.post("/", async (request, response, next) => {
     important: body.important || false,
     date: new Date(),
   });
-
-  const savedNote = await note.save();
-  response.status(201).json(savedNote);
+  try {
+    const savedNote = await note.save();
+    response.status(201).json(savedNote);
+  } catch (error) {
+    next(error);
+  }
 });
 
 notesRouter.delete("/:id", (request, response, next) => {
@@ -53,5 +57,11 @@ notesRouter.put("/:id", (request, response, next) => {
     })
     .catch((error) => next(error));
 });
+
+const errorHandler = (error, request, response, next) => {
+  if (error.name === "ValidationError") {
+    return response.status(400).josn({ error: error.message });
+  }
+};
 
 module.exports = notesRouter;
