@@ -7,10 +7,10 @@ const Note = require("../models/note");
 
 beforeEach(async () => {
   await Note.deleteMany({});
-  let noteObject = new Note(helper.initialNotes[0]);
-  await noteObject.save();
-  noteObject = new Note(helper.initialNotes[1]);
-  await noteObject.save();
+
+  const noteObject = helper.initialNotes.map((note = new Note(note)));
+  const promiseArray = noteObject.map((note) => note.save());
+  await Promise.all(promiseArray);
 });
 
 describe("Note REST API", () => {
